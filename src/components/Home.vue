@@ -47,7 +47,14 @@
         methods: {
             ...mapActions(['loadTasks', 'saveTasks', 'addTask', 'updateTask', 'deleteTask']),
             updateDate(date){
-                return moment(date).format('LLL')
+                const givenDate = moment(date);
+                const today = moment();
+                const yesterday = moment().subtract(1, 'days');
+                const isToday = givenDate.isSame(today, 'day');
+                const isYesterday = givenDate.isSame(yesterday, 'day');
+                if(isToday) return 'Today, ' + moment(date).format('hh:mm a')
+                if(isYesterday) return 'Yesterday, ' + moment(date).format('hh:mm a')
+                return moment(date).format('MMMM DD, YYYY, h:mm a')
             },
             updateCurrentDateTime(){
                 this.currentDateTime = moment(new Date()).format('MMMM DD, YYYY, h:mm:ss a')
@@ -147,7 +154,7 @@
             <div v-if="tasksTotalCount>0" class="tasks flex flex-col w-full h-[40vh] overflow-y-auto overflow-hidden">
                 <!-- Pending tasks -->
                 <div class="rounded-xl mr-2 bg-dark transition-all duration-500 tasks" v-if="tasksPendingCount>0">
-                    <div class="text-red flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1" @click="showPending=!showPending">
+                    <div class="text-red flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1 select-none" @click="showPending=!showPending">
                         <img v-if="showPending" class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/down-red.png" alt="">
                         <img v-else class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/up-red.png" alt="">
                         <span class="font-PoppinsBold text-md lg:text-xl">
@@ -182,7 +189,7 @@
                                 <span v-else class="font-PoppinsBold">{{ item.task }}</span>
                                 <div class="flex flex-col w-full">
                                     <span class="w-full break-words text-wrap text-xs md:text-sm  opacity-70">
-                                        Created on {{ updateDate(item.created_at) }}
+                                        Added on {{ updateDate(item.created_at) }}
                                     </span>
                                     <span class="w-full break-words text-wrap text-xs md:text-sm opacity-70">
                                         Updated on {{ updateDate(item.updated_at) }}
@@ -230,7 +237,7 @@
                 <!-- Completed tasks -->
                 <div class="flex flex-col rounded-xl mr-2 bg-dark transition-all duration-500 tasks" v-if="tasksCompletedCount>0">
                     <div 
-                        class="text-green flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1" 
+                        class="text-green flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1 select-none" 
                         @click="showCompleted=!showCompleted"
                     >
                         <img v-if="showCompleted" class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/down-green.png" alt="">
@@ -263,7 +270,7 @@
                                 />
                                 <span v-else class="line-through">{{ item.task }}</span>
                                 <div class="flex flex-col w-full">
-                                    <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Created on {{ updateDate(item.created_at) }}</span>
+                                    <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Added on {{ updateDate(item.created_at) }}</span>
                                     <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Updated on {{ updateDate(item.updated_at) }}</span>
                                 </div>
                             </div>
