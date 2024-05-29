@@ -144,9 +144,9 @@
                     <img class="w-8 h-8" src="/src/assets/icons/enter.png" alt="">
                 </div>
             </div>
-            <div v-if="true" class="tasks flex flex-col w-full h-[40vh] overflow-y-auto overflow-hidden">
+            <div v-if="tasksTotalCount>0" class="tasks flex flex-col w-full h-[40vh] overflow-y-auto overflow-hidden">
                 <!-- Pending tasks -->
-                <div class="rounded-xl mr-2 bg-dark transition-all duration-500 tasks" v-if="true">
+                <div class="rounded-xl mr-2 bg-dark transition-all duration-500 tasks" v-if="tasksPendingCount>0">
                     <div class="text-red flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1" @click="showPending=!showPending">
                         <img v-if="showPending" class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/down-red.png" alt="">
                         <img v-else class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/up-red.png" alt="">
@@ -228,7 +228,7 @@
                     </div>
                 </div>
                 <!-- Completed tasks -->
-                <div class="flex flex-col rounded-xl mr-2 bg-dark transition-all duration-500 tasks" v-if="true">
+                <div class="flex flex-col rounded-xl mr-2 bg-dark transition-all duration-500 tasks" v-if="tasksCompletedCount>0">
                     <div 
                         class="text-green flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1" 
                         @click="showCompleted=!showCompleted"
@@ -281,7 +281,7 @@
                                         class="w-5 h-5 md:w-7 md:h-7 cursor-pointer" 
                                         src="/src/assets/icons/edit.png" 
                                         alt=""
-                                        @click="handleEditClick(index)"  
+                                        @click="handleEditClick(index)" 
                                     >
                                 </label>
                                 <button 
