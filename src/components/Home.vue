@@ -171,7 +171,7 @@
                                     @change="handleTaskClick(index)"
                                 />
                             </label>
-                            <div class="flex flex-col w-[100%] lg:w-[70%] break-words text-wrap text-start text-sm lg:text-xl">
+                            <div class="flex flex-col w-[100%] lg:w-[70%] break-words text-wrap text-start text-lg lg:text-xl">
                                 <textarea
                                     v-if="item.edit"
                                     class="font-PoppinsBold bg-transparent outline-none w-full h-20"
@@ -181,10 +181,10 @@
                                 />
                                 <span v-else class="font-PoppinsBold">{{ item.task }}</span>
                                 <div class="flex flex-col w-full">
-                                    <span class="w-full break-words text-wrap text-sm opacity-70">
+                                    <span class="w-full break-words text-wrap text-xs md:text-sm  opacity-70">
                                         Created on {{ updateDate(item.created_at) }}
                                     </span>
-                                    <span class="w-full break-words text-wrap text-sm opacity-70">
+                                    <span class="w-full break-words text-wrap text-xs md:text-sm opacity-70">
                                         Updated on {{ updateDate(item.updated_at) }}
                                     </span>
                                 </div>
@@ -253,7 +253,7 @@
                                 <img class="w-9 h-9" src="/src/assets/icons/tick.png" alt="">
                                 <input type="checkbox" v-model="item.status" :id="'check' + index" class="cursor-pointer w-full" @change="handleTaskClick(index)"/>
                             </label>
-                            <div class="w-[100%] lg:w-[70%] break-words text-wrap text-start text-sm lg:text-xl">
+                            <div class="w-[100%] lg:w-[70%] break-words text-wrap text-start text-lg lg:text-xl">
                                 <textarea
                                     v-if="item.edit"
                                     class="font-PoppinsBold bg-transparent outline-none w-full h-20"
@@ -263,8 +263,8 @@
                                 />
                                 <span v-else class="line-through">{{ item.task }}</span>
                                 <div class="flex flex-col w-full">
-                                    <span class="w-96 break-words text-wrap text-sm opacity-70">Created on {{ updateDate(item.created_at) }}</span>
-                                    <span class="w-96 break-words text-wrap text-sm opacity-70">Updated on {{ updateDate(item.updated_at) }}</span>
+                                    <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Created on {{ updateDate(item.created_at) }}</span>
+                                    <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Updated on {{ updateDate(item.updated_at) }}</span>
                                 </div>
                             </div>
                             <div class="flex flex-row gap-2 ml-auto md:w-auto w-full">
