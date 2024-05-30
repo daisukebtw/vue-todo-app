@@ -2,8 +2,14 @@
     <div class="fixed top-0 w-full h-20 bg-dark flex flex-row items-center justify-between z-50">
         <h1 class="text-xl lg:text-2xl font-PoppinsBold ml-4 lg:ml-8">My<span class="text-red">Todo</span></h1>
         <input type="checkbox" name="online" id="online-status" v-model="onlineStatus">
-        <label v-if="onlineStatus" for="online-status" class="cursor-pointer font-PoppinsBold text-green mr-4 lg:mr-8">Online</label>
-        <label v-else for="online-status" class="cursor-pointer font-PoppinsBold text-red mr-4 lg:mr-8">Offline</label>
+        <label v-if="onlineStatus" for="online-status" class="flex flex-row gap-2 items-center justify-center cursor-pointer font-PoppinsBold text-green mr-4 lg:mr-8">
+            <div class="w-2 h-2 rounded-full bg-green"></div>
+            Online
+        </label>
+        <label v-else for="online-status" class="flex flex-row gap-2 items-center justify-center cursor-pointer font-PoppinsBold text-red mr-4 lg:mr-8">
+            <div class="w-2 h-2 rounded-full bg-red"></div>
+            Offline
+        </label>
     </div>
 </template>
 
