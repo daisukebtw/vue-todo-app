@@ -124,7 +124,7 @@
         <div class="flex flex-col gap-4 w-full">
             <div class="w-full flex flex-col items-center justify-center">
                 <span class="text-xs md:text-md">{{ currentDateTime }}</span>
-                <span class="font-PoppinsBold text-sm md:text-xl">Welcome to My<span class="text-red">Todo</span> App. Have Nice Day &#128522;</span>
+                <span class="font-PoppinsBold text-sm md:text-xl">Welcome to My<span class="text-red">Todo</span> App. Have a Nice Day &#128522;</span>
             </div>
             <div class="w-full h-auto p-2 lg:p-10 flex flex-row gap-2 lg:gap-10 items-center justify-center bg-dark border-2 border-light rounded-3xl shadow-md font-PoppinsBold">
                 <p class="font-bold text-2xl md:text-3xl">

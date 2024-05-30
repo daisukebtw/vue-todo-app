@@ -59,7 +59,6 @@ const store = createStore({
         },
         updateOnlineStatus({ commit }, status) {
             commit('SET_ONLINE', status)
-            localStorage.setItem('online', JSON.stringify(status))
         },
         async loadTasks({ commit, state }) {
             if(state.online){
