@@ -1,6 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFireStore } from "firebase/firestore"
+import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
+import { getAuth, signInAnonymously } from "firebase/auth"
+
+
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -12,10 +15,15 @@ const firebaseConfig = {
   messagingSenderId: "428942186369",
   appId: "1:428942186369:web:369fee9a0fb22d5223ba80",
   measurementId: "G-DQF2MVME2D"
-};
+}
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
+
 
 // Initialize FireStore Service
-export const db = getFireStore()
+const db = getFirestore(app)
+
+export { auth }
+export default db

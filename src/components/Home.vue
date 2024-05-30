@@ -2,6 +2,7 @@
     import Header from './Header.vue'
     import Footer from './Footer.vue'
     import moment from 'moment'
+    import Loading from './Loading.vue'
 
     import { mapState, mapGetters, mapActions } from 'vuex'
 
@@ -9,6 +10,7 @@
         components: {
             Header,
             Footer,
+            Loading,
         },
         data() {
             return {
@@ -22,7 +24,8 @@
         watch:{
             tasks: {
                 handler(newTasks) {
-                    this.saveTasks(newTasks)                  
+                    this.setLoading(false)
+                    this.saveTasksLocal(newTasks)
                 },
                 deep: true,
             },
@@ -36,7 +39,10 @@
         },
         computed: {
             ...mapState({
-                tasks: state => state.tasks
+                tasks: state => state.tasks,
+                localTasks: state => state.localTasks,
+                loading: state => state.loading,
+                userId: state => state.userId,
             }),
             ...mapGetters([
                 'tasksTotalCount',
@@ -45,7 +51,7 @@
             ])
         },
         methods: {
-            ...mapActions(['loadTasks', 'saveTasks', 'addTask', 'updateTask', 'deleteTask']),
+            ...mapActions(['loadTasks', 'saveTasksLocal', 'addTask', 'updateTask', 'deleteTask', 'setLoading']),
             updateDate(date){
                 const givenDate = moment(date);
                 const today = moment();
@@ -61,9 +67,11 @@
             },
             handleAddTask() {
                 if(this.taskInput != '') {
+                    this.setLoading(true)
                     const newTask = {
-                        'id': this.tasks.length,
+                        'task_id': this.tasks.length+1,
                         'task': this.taskInput,
+                        'user_id': this.userId,
                         'status': false,
                         'edit': false,
                         'created_at': new Date(),
@@ -76,29 +84,25 @@
                     this.showWarning = true
                 }
             },
-            handleUpdateTask(index, item) {
+            handleUpdateTask(index) {
+                this.setLoading(true)
                 this.tasks[index].edit = false
                 const task = {
-                        'id': item.id,
-                        'task': item.task,
-                        'status': item.status,
-                        'edit': false,
-                        'updated_at': new Date(),
-                    }
-                this.updateTask(index, task)
-            },
-            handleTaskClick(index){
-                this.tasks[index].updated_at = new Date()
-            },
-            handleEditClick(index){
-                // this.hideUpdateButton(index)
-            },
-            hideUpdateButton(index){
-                if(!this.tasks[index].edit){
-                    setTimeout(() => {
-                        this.tasks[index].edit = false
-                    }, 5000)
+                    'id': this.tasks[index].id?this.tasks[index].id:'',
+                    'user_id': this.userId,
+                    'task_id': this.tasks[index].task_id,
+                    'task': this.tasks[index].task,
+                    'status': this.tasks[index].status,
+                    'edit': false,
+                    'created_at': this.tasks[index].created_at,
+                    'updated_at': new Date(),
                 }
+                this.updateTask({index, task})
+            },
+            handleDeleteTask(index) {
+                this.setLoading(true)
+                const id = this.tasks[index].task_id
+                this.deleteTask({index, id});
             },
         },
         mounted() {
@@ -115,6 +119,7 @@
 <template>
     <Header />
     <Footer />
+    <Loading v-show="loading" />
     <div class="flex flex-row items-start justify-start gap-4 w-[90%] md:w-[60%] lg:w-[40%] text-center">
         <div class="flex flex-col gap-4 w-full">
             <div class="w-full flex flex-col items-center justify-center">
@@ -140,13 +145,13 @@
                     ref="taskInput"
                     @keyup.enter="handleAddTask"
                 />
-                <button 
-                    class="absolute top-1/2 -translate-y-1/2 right-3 bg-red hover:bg-opacity-50 transition-all duration-200 rounded-xl text-dark font-PoppinsBold p-1 pl-4 pr-4"
+                <button
+                    class="lg:hidden absolute top-1/2 -translate-y-1/2 right-3 bg-red hover:bg-opacity-50 transition-all duration-200 rounded-xl text-dark font-PoppinsBold p-1 pl-4 pr-4"
                     @click="handleAddTask"
-                >
+                    >
                     Add
                 </button>
-                <div class="absolute top-1/2 -translate-y-1/2 -right-24 hidden md:flex items-center">
+                <div class="absolute top-1/2 -translate-y-1/2 right-4 hidden lg:flex items-center">
                     <span>Enter</span>
                     <img class="w-8 h-8" src="/src/assets/icons/enter.png" alt="">
                 </div>
@@ -168,26 +173,26 @@
                             <label 
                                 class="hidden md:block cursor-pointer"
                                 :for="'check'+index"
-                            >
+                                >
                                 <img class="w-7 h-7" src="/src/assets/icons/circle.png" alt="">
                                 <input 
                                     type="checkbox" 
                                     v-model="item.status" 
                                     :id="'check' + index" 
                                     class="cursor-pointer w-full" 
-                                    @change="handleTaskClick(index)"
+                                    @change="handleUpdateTask(index)"
                                 />
                             </label>
                             <div class="flex flex-col w-[100%] lg:w-[70%] break-words text-wrap text-start text-lg lg:text-xl">
                                 <textarea
                                     v-if="item.edit"
-                                    class="font-PoppinsBold bg-transparent outline-none w-full h-20"
+                                    class="font-PoppinsBold bg-transparent outline-none w-full min-h-10"
                                     type="text"
                                     v-model="item.task"
-                                    :ref="'task'+index"
-                                />
-                                <span v-else class="font-PoppinsBold">{{ item.task }}</span>
-                                <div class="flex flex-col w-full">
+                                    :id="'task'+index"
+                                    />
+                                    <span v-else class="font-PoppinsBold">{{ item.task }}</span>
+                                    <div class="flex flex-col w-full">
                                     <span class="w-full break-words text-wrap text-xs md:text-sm  opacity-70">
                                         Added on {{ updateDate(item.created_at) }}
                                     </span>
@@ -200,14 +205,14 @@
                                 <label 
                                     class="block md:hidden cursor-pointer mr-auto"
                                     :for="'check'+index"
-                                >
+                                    >
                                     <img class="w-5 h-5" src="/src/assets/icons/circle.png" alt="">
                                     <input 
                                         type="checkbox" 
                                         v-model="item.status" 
                                         :id="'check' + index" 
                                         class="cursor-pointer w-full" 
-                                        @change="handleTaskClick(index)"
+                                        @change="handleUpdateTask(index)"
                                     />
                                 </label>
                                 <input type="checkbox" name="edit" :id="'edit'+index" v-model="item.edit">
@@ -216,16 +221,15 @@
                                         class="w-5 h-5 md:w-7 md:h-7 cursor-pointer" 
                                         src="/src/assets/icons/edit.png" 
                                         alt=""
-                                        @click="handleEditClick(index)"  
                                     >
                                 </label>
                                 <button 
                                     v-else 
                                     class="bg-green text-dark text-sm p-1 pl-2 pr-2 font-PoppinsBold rounded-lg" 
-                                    @click="handleUpdateTask(index, item)"
+                                    @click="handleUpdateTask(index)"
                                 >Update</button>
                                 <img 
-                                    @click="deleteTask(index)" 
+                                    @click="handleDeleteTask(index)" 
                                     class="w-5 h-5 md:w-7 md:h-7 cursor-pointer" 
                                     src="/src/assets/icons/delete.png" 
                                     alt=""
@@ -239,7 +243,7 @@
                     <div 
                         class="text-green flex flex-row items-end justify-start gap-2 w-full cursor-pointer p-1 select-none" 
                         @click="showCompleted=!showCompleted"
-                    >
+                        >
                         <img v-if="showCompleted" class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/down-green.png" alt="">
                         <img v-else class="w-5 h-5 lg:w-6 lg:h-6" src="/src/assets/icons/up-green.png" alt="">
                         <span class="font-PoppinsBold text-md lg:text-xl">
@@ -252,22 +256,22 @@
                         <div 
                             class="tasks relative flex flex-row flex-wrap items-start justify-start gap-4 w-full text-xl hover:bg-gray transition-all duration-200 rounded-xl p-4" 
                             v-if="item.status"
-                        >
+                            >
                             <label
                                 class="hidden md:block cursor-pointer"
                                 :for="'check'+index"  
-                            >
+                                >
                                 <img class="w-9 h-9" src="/src/assets/icons/tick.png" alt="">
-                                <input type="checkbox" v-model="item.status" :id="'check' + index" class="cursor-pointer w-full" @change="handleTaskClick(index)"/>
+                                <input type="checkbox" v-model="item.status" :id="'check' + index" class="cursor-pointer w-full" @change="handleUpdateTask(index)"/>
                             </label>
                             <div class="w-[100%] lg:w-[70%] break-words text-wrap text-start text-lg lg:text-xl">
                                 <textarea
                                     v-if="item.edit"
-                                    class="font-PoppinsBold bg-transparent outline-none w-full h-20"
+                                    class="font-PoppinsBold bg-transparent outline-none w-full min-h-10"
                                     type="text"
                                     v-model="item.task"
                                     :ref="'task'+index"
-                                />
+                                    />
                                 <span v-else class="line-through">{{ item.task }}</span>
                                 <div class="flex flex-col w-full">
                                     <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Added on {{ updateDate(item.created_at) }}</span>
@@ -278,9 +282,9 @@
                                 <label
                                     class="md:hidden block cursor-pointer mr-auto"
                                     :for="'check'+index"  
-                                >
+                                    >
                                     <img class="w-6 h-6 md:w-9 md:h-9" src="/src/assets/icons/tick.png" alt="">
-                                    <input type="checkbox" v-model="item.status" :id="'check' + index" class="cursor-pointer w-full" @change="handleTaskClick(index)"/>
+                                    <input type="checkbox" v-model="item.status" :id="'check' + index" class="cursor-pointer w-full" @change="handleUpdateTask(index)"/>
                                 </label>
                                 <input type="checkbox" name="edit" :id="'edit'+index" v-model="item.edit">
                                 <label v-if="!item.edit" :for="'edit'+index">
@@ -288,16 +292,15 @@
                                         class="w-5 h-5 md:w-7 md:h-7 cursor-pointer" 
                                         src="/src/assets/icons/edit.png" 
                                         alt=""
-                                        @click="handleEditClick(index)" 
                                     >
                                 </label>
                                 <button 
                                     v-else 
                                     class="bg-green text-dark text-sm p-1 pl-2 pr-2 font-PoppinsBold rounded-lg" 
-                                    @click="handleUpdateTask(index, item)"
-                                >Update</button>
-                                <img 
-                                    @click="deleteTask(index)" 
+                                    @click="handleUpdateTask(index)"
+                                    >Update</button>
+                                    <img 
+                                    @click="handleDeleteTask(index)" 
                                     class="w-5 h-5 md:w-7 md:h-7 cursor-pointer" 
                                     src="/src/assets/icons/delete.png" 
                                     alt=""

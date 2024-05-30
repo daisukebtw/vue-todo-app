@@ -1,6 +1,47 @@
 <template>
     <div class="fixed top-0 w-full h-20 bg-dark flex flex-row items-center justify-between z-50">
-        <h1 class="text-2xl font-PoppinsBold ml-8">My<span class="text-red">Todo</span></h1>
-        <span class="cursor-pointer font-PoppinsBold hover:text-red transition-all duration-200 mr-8">Login</span>
+        <h1 class="text-xl lg:text-2xl font-PoppinsBold ml-4 lg:ml-8">My<span class="text-red">Todo</span></h1>
+        <input type="checkbox" name="online" id="online-status" v-model="onlineStatus">
+        <label v-if="onlineStatus" for="online-status" class="cursor-pointer font-PoppinsBold text-green mr-4 lg:mr-8">Online</label>
+        <label v-else for="online-status" class="cursor-pointer font-PoppinsBold text-red mr-4 lg:mr-8">Offline</label>
     </div>
 </template>
+
+<script>
+    import { mapState, mapActions } from 'vuex'
+    
+    export default {
+        data() {
+            return {
+                onlineStatus: JSON.parse(localStorage.getItem('online')) || false,
+            }
+        },
+        computed: {
+            ...mapState({
+                online: state => state.online,
+                loading: state => state.loading,
+            })
+        },
+        watch: {
+            onlineStatus(){
+                this.setLoading(true)
+                this.updateOnlineStatus(this.onlineStatus)
+                this.loadTasks()
+            }
+        },
+        methods: {
+            ...mapActions(['updateOnlineStatus', 'loadTasks', 'setLoading'])
+        },
+        mounted() {
+            this.updateOnlineStatus(false)
+            this.setLoading(true)
+            this.loadTasks()
+        },
+    }
+</script>
+
+<style>
+    input[type="checkbox"]{
+        display: none;
+    }
+</style>
