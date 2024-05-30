@@ -1,6 +1,6 @@
-# To Do App
+# My ToDo App
 
-Welcome to the To Do App, a simple and intuitive application built with Vue.js that helps you manage your daily tasks efficiently.
+Welcome to My ToDo App, a simple and intuitive application built with Vue.js that helps you manage your daily tasks efficiently.
 
 ## Table of Contents
 
@@ -17,6 +17,8 @@ Welcome to the To Do App, a simple and intuitive application built with Vue.js t
 - **Delete Tasks**: Remove tasks that are no longer needed.
 - **Mark as Completed**: Mark tasks as completed to keep track of your progress.
 - **Filter Tasks**: View all, active, or completed tasks.
+- **Offline Mode**: Manage tasks without internet connection.
+- **Online Mode**: Manage and sync tasks with internet connection.
 
 ## Installation
 
