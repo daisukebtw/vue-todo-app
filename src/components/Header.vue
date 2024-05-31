@@ -13,8 +13,9 @@
             Online
         </label>
         <label 
-            v-else for="online-
-            status" class="flex 
+            v-else 
+            for="online-status" 
+            class="flex 
             flex-row gap-2 items-center justify-center cursor-pointer font-PoppinsBold text-red mr-4 lg:mr-8"
         >
             <div class="w-6 lg:w-10 h-3 lg:h-5 rounded-full bg-light flex items-center justify-start p-[3px] lg:p-1 bg-opacity-20">
