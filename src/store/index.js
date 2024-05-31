@@ -17,7 +17,13 @@ const store = createStore({
         online: false,
         loading: true,
         syncing: false,
-        userId: null,
+        notify: true,
+        showHelp: false,
+        notification: {
+            'message':'',
+            'type':'normal',
+        },
+        userId: auth.currentUser?auth.currentUser.uid:null,
     },
     getters: {
         tasksTotalCount: state => state.tasks.length,
@@ -49,11 +55,38 @@ const store = createStore({
         SET_ONLINE(state, status){
             state.online = status
         },
+        SET_SHOWHELP(state, status){
+            state.showHelp = status
+        },
+        SET_NOTIFICATION(state, message, type){
+            state.notification = {
+                'message': message,
+                'type': type?type:'normal',
+            }
+            state.notify = true
+            setTimeout(() => {
+                state.notify = false
+            }, 2000);
+        },
         SET_USER(state, user){
             state.userId = user
         },
     },
     actions: {
+        async setAnonymousUser({ commit }){
+            if(!auth.currentUser){
+                // Sign in anonymously
+                await signInAnonymously(auth)
+            }
+            await commit('SET_USER', auth.currentUser.uid)
+        }
+        ,
+        setShowHelp({ commit },status) {
+            commit('SET_SHOWHELP', status)
+        },
+        setNotification({ commit }, message, type) {
+            commit('SET_NOTIFICATION', message, type)
+        },
         setLoading({ commit }, status) {
             commit('SET_LOADING', status)
         },
@@ -74,13 +107,13 @@ const store = createStore({
                         commit('SET_SYNCING', false)
                     }
                 }
-            try {
-                const tasks = await loadTasksFromFirestore(state.userId)
-                commit('SET_TASKS', tasks)
-                commit('SET_TASKS_LOCAL', tasks)
-            } catch (error) {
-                console.error("Error during loading tasks from firestore!", error);
-            }
+                try {
+                    const tasks = await loadTasksFromFirestore(state.userId)
+                    commit('SET_TASKS', tasks)
+                    commit('SET_TASKS_LOCAL', tasks)
+                } catch (error) {
+                    console.error("Error during loading tasks from firestore!", error);
+                }
             } else {
                 const tasks = JSON.parse(localStorage.getItem('tasks') || '[]') 
                 commit('SET_TASKS', tasks)

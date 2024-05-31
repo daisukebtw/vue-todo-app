@@ -32,7 +32,7 @@
     export default {
         data() {
             return {
-                onlineStatus: JSON.parse(localStorage.getItem('online')) || false,
+                onlineStatus: false,
             }
         },
         computed: {

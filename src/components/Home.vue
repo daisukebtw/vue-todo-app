@@ -3,6 +3,8 @@
     import Footer from './Footer.vue'
     import moment from 'moment'
     import Loading from './Loading.vue'
+    import Notification from './WelcomeBoard.vue'
+    import Help from './Help.vue'
 
     import { mapState, mapGetters, mapActions } from 'vuex'
 
@@ -11,6 +13,8 @@
             Header,
             Footer,
             Loading,
+            Notification,
+            Help,
         },
         data() {
             return {
@@ -24,8 +28,8 @@
         watch:{
             tasks: {
                 handler(newTasks) {
-                    this.setLoading(false)
                     this.saveTasksLocal(newTasks)
+                    this.setLoading(false)
                 },
                 deep: true,
             },
@@ -43,6 +47,7 @@
                 localTasks: state => state.localTasks,
                 loading: state => state.loading,
                 userId: state => state.userId,
+                showHelp: state => state.showHelp,
             }),
             ...mapGetters([
                 'tasksTotalCount',
@@ -51,7 +56,7 @@
             ])
         },
         methods: {
-            ...mapActions(['loadTasks', 'saveTasksLocal', 'addTask', 'updateTask', 'deleteTask', 'setLoading']),
+            ...mapActions(['loadTasks', 'saveTasksLocal', 'addTask', 'updateTask', 'deleteTask', 'setLoading', 'setShowHelp', 'setAnonymousUser']),
             updateDate(date){
                 const givenDate = moment(date);
                 const today = moment();
@@ -104,8 +109,19 @@
                 const id = this.tasks[index].task_id
                 this.deleteTask({index, id});
             },
+            handleCommands() {
+                window.addEventListener('keyup', (event) => {
+                    if(event.key==="h" && event.altKey){
+                        this.setShowHelp(true)
+                    }
+                    if(event.key==="Escape"){
+                        this.setShowHelp(false)
+                    }
+                })
+            },
         },
         mounted() {
+            this.setAnonymousUser()
             this.$refs.taskInput.focus()
             this.timer = setInterval(this.updateCurrentDateTime, 1000)
             this.loadTasks()
@@ -119,12 +135,13 @@
 <template>
     <Header />
     <Footer />
-    <Loading v-show="loading" />
+    <Loading />
+    <Notification />
+    <Help />
     <div class="flex flex-row items-start justify-start gap-4 w-[90%] md:w-[60%] lg:w-[40%] text-center">
         <div class="flex flex-col gap-4 w-full">
             <div class="w-full flex flex-col items-center justify-center">
-                <span class="text-xs md:text-md">{{ currentDateTime }}</span>
-                <span class="font-PoppinsBold text-sm md:text-xl">Welcome to My<span class="text-red">Todo</span> App. Have a Nice Day &#128522;</span>
+                <span class="text-xs md:text-lg font-PoppinsBold">{{ currentDateTime }}</span>
             </div>
             <div class="w-full h-auto p-2 lg:p-10 flex flex-row gap-2 lg:gap-10 items-center justify-center bg-dark border-2 border-light rounded-3xl shadow-md font-PoppinsBold">
                 <p class="font-bold text-2xl md:text-3xl">
@@ -143,7 +160,8 @@
                     id="task-input"
                     placeholder="Add Task Here"
                     ref="taskInput"
-                    @keyup.enter="handleAddTask"
+                    @keydown="handleCommands()"
+                    @keypress.enter="handleAddTask"
                 />
                 <button
                     class="lg:hidden absolute top-1/2 -translate-y-1/2 right-3 bg-red hover:bg-opacity-50 transition-all duration-200 rounded-xl text-dark font-PoppinsBold p-1 pl-4 pr-4"
@@ -169,7 +187,7 @@
                     </div>
                     <div v-if="showPending" class="w-full h-[2px] bg-gray mb-2"></div>
                     <div v-if="showPending" v-for="(item, index) in tasks" :key="index" class="flex flex-row pl-2">
-                        <div class="tasks relative flex flex-row flex-wrap items-start justify-start gap-4 w-full text-xl hover:bg-gray transition-all duration-200 rounded-xl p-4" v-if="!item.status">
+                        <div class="tasks relative flex flex-row flex-wrap items-start justify-start gap-4 w-full text-xl hover:bg-gray transition-all duration-200 rounded-xl p-2 lg:p-4" v-if="!item.status">
                             <label 
                                 class="hidden md:block cursor-pointer"
                                 :for="'check'+index"
@@ -189,9 +207,9 @@
                                     class="font-PoppinsBold bg-transparent outline-none w-full min-h-10"
                                     type="text"
                                     v-model="item.task"
-                                    :id="'task'+index"
+                                    :ref="'task'+index"
                                     />
-                                    <span v-else class="font-PoppinsBold">{{ item.task }}</span>
+                                    <label :for="'edit'+index" v-else class="font-PoppinsBold">{{ item.task }}</label>
                                     <div class="flex flex-col w-full">
                                     <span class="w-full break-words text-wrap text-xs md:text-sm  opacity-70">
                                         Added on {{ updateDate(item.created_at) }}
@@ -272,7 +290,7 @@
                                     v-model="item.task"
                                     :ref="'task'+index"
                                     />
-                                <span v-else class="line-through">{{ item.task }}</span>
+                                <label :for="'edit'+index" v-else class="line-through">{{ item.task }}</label>
                                 <div class="flex flex-col w-full">
                                     <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Added on {{ updateDate(item.created_at) }}</span>
                                     <span class="w-96 break-words text-wrap text-xs md:text-sm opacity-70">Updated on {{ updateDate(item.updated_at) }}</span>

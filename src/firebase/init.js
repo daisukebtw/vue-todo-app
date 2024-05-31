@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { getAuth, signInAnonymously } from "firebase/auth"
+import { getAuth } from "firebase/auth"
 
 
 
@@ -24,6 +24,7 @@ const auth = getAuth(app)
 
 // Initialize FireStore Service
 const db = getFirestore(app)
+
 
 export { auth }
 export default db
