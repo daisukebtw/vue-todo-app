@@ -8,11 +8,11 @@
             class="notify relative bg-gray text-light font-PoppinsBold text-md md:text-2xl min-w-40 lg:min-w-52 h-auto p-4 lg:p-6 rounded-xl shadow-xl shadow-dark text-center"
              >
             <div class="absolute top-1 left-1/2 -translate-x-1/2 w-32 h-2 flex flex-row justify-between">
-                <div class="bg-dark w-2 h-3 rounded-full border-2 border-light border-l-0 relative">
-                    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 h-20 w-[2px] bg-light"></div>
+                <div class="bg-dark w-2 h-3 rounded-full border-2 border-dark border-l-0 relative">
+                    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 h-20 w-[2px] bg-light rounded-full"></div>
                 </div>
-                <div class="bg-dark w-2 h-3 rounded-full border-2 border-light border-l-0 relative">
-                    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 h-20 w-[2px] bg-light"></div>
+                <div class="bg-dark w-2 h-3 rounded-full border-2 border-dark border-l-0 relative">
+                    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 h-20 w-[2px] bg-light rounded-full"></div>
                 </div>
             </div>
             <span class="font-PoppinsBold text-sm md:text-xl flex flex-col gap-0">
