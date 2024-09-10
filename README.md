@@ -22,6 +22,8 @@ Welcome to My ToDo App, a simple and intuitive application built with Vue.js tha
 
 ## Installation
 
+### Using Bash
+
 To get a local copy up and running follow these simple steps:
 
 1. **Clone the repository:**
@@ -41,6 +43,38 @@ To get a local copy up and running follow these simple steps:
     ```bash
     npm install
     ```
+
+### Using Docker
+
+To run app using Docker follow these simple steps:
+
+    ```bash
+    docker run -d -p 80:80 daisukebtw/vue-todo-app
+    ```
+
+### Using Docker Compose
+
+To run app using Docker Compose follow these simple steps:
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/krishnasankarkk/vue-todo-app.git
+    ```
+
+2. **Navigate to the project directory:**
+
+    ```bash
+    cd vue-todo-app
+    ```
+
+3. **Run Docker Compose**
+
+    ```bash
+    docker compose up -d
+    ```
+
+This will start the app on http://localhost:5173/ by default.
 
 ## Usage
 
