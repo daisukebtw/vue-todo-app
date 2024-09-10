@@ -74,7 +74,7 @@ To run app using Docker Compose follow these simple steps:
     docker compose up -d
     ```
 
-This will start the app on http://localhost:5173/ by default.
+This will start the app on http://localhost:80/ by default.
 
 ## Usage
 
