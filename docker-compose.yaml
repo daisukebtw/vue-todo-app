@@ -1,0 +1,5 @@
+services:
+  vue-todo-app:
+    image: daisukebtw/vue-todo-app
+    ports:
+      - 80:80
