@@ -48,9 +48,9 @@ To get a local copy up and running follow these simple steps:
 
 To run app using Docker follow these simple steps:
 
-    ```bash
-    docker run -d -p 80:80 daisukebtw/vue-todo-app
-    ```
+```bash
+docker run -d -p 80:80 daisukebtw/vue-todo-app
+```
 
 ### Using Docker Compose
 
@@ -59,7 +59,7 @@ To run app using Docker Compose follow these simple steps:
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/krishnasankarkk/vue-todo-app.git
+    git clone https://github.com/daisukebtw/vue-todo-app.git
     ```
 
 2. **Navigate to the project directory:**
