@@ -15,6 +15,4 @@ jobs:
           node-version: '18'
       - run: npm install
       - name: Launch tests
-        run: |
-          npm run build
-          npm run preview
+        run: npm run build
